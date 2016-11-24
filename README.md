@@ -1,9 +1,8 @@
-# Mibew Geo IP plugin
+# Mibew Bot Framework Plugin
 
-Plugin bot framework.
+Plugin Bot framework to mibew.
 
-
-## Instalación
+## Installation
 
 1. Get the archive with the plugin sources. At the moment the only option is to build the plugin from sources.
 
