@@ -1,0 +1,68 @@
+.bot-control-change {
+    display: none;
+    vertical-align: middle;
+    background-position: -16px -16px;
+}
+
+.image-bot-on {
+    width: 16px;
+    height: 16px;
+    background: transparent url("images/buttons.png") scroll no-repeat 0 0;
+}
+
+.image-bot-off {
+    width: 16px;
+    height: 16px;
+    background: transparent url("images/neutral-x.png") scroll no-repeat 0 0;
+}
+
+.control-bot {
+    display: none;
+    margin: 15px 0 0 11px;
+    cursor: none;
+    float: left;
+}
+
+#send-message-ab-a, .submit-button {
+    float: left;
+    width: 190px;
+    height: 33px;
+    font-weight: normal;
+    font-size: 17px;
+    font-family: Arial, sans-serif;
+    line-height: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: #495151;
+    background: url("images/submit-a.png") no-repeat 0 0 transparent;
+}
+#send-message-ab-a:hover, .submit-button:hover {
+    color: #000000;
+    background: url("images/submit-a.png") no-repeat -190px 0 transparent;
+}
+#content-wrapper #send-message-ab-a {
+    float: left;
+    margin-top: 10px;
+}
+
+#send-message-ab-d, .submit-button {
+    float: left;
+    width: 190px;
+    height: 33px;
+    font-weight: normal;
+    font-size: 17px;
+    font-family: Arial, sans-serif;
+    line-height: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: #495151;
+    background: url("images/submit-d.png") no-repeat 0 0 transparent;
+}
+#send-message-ab-d:hover, .submit-button:hover {
+    color: #000000;
+    background: url("images/submit-d.png") no-repeat -190px 0 transparent;
+}
+#content-wrapper #send-message-ab-d {
+    float: left;
+    margin-top: 10px;
+}

@@ -1,0 +1,39 @@
+bot_status:
+    path: /operator/bot/status/{thread_id}
+    defaults:
+        _controller: TaisaPlus\Mibew\Plugin\Bot\Controller\Chat\BotController::status
+        _access_check: Mibew\AccessControl\Check\LoggedInCheck
+    requirements:
+        thread_id: \d{1,10}
+
+bot_on:
+    path: /operator/bot/on/{thread_id}/{token}
+    defaults:
+        _controller: TaisaPlus\Mibew\Plugin\Bot\Controller\Chat\BotController::OnBot
+        _access_check: Mibew\AccessControl\Check\LoggedInCheck
+    requirements:
+        thread_id: \d{1,10}
+        token: \d{1,10}
+
+bot_off:
+    path: /operator/bot/off/{thread_id}/{token}
+    defaults:
+        _controller: TaisaPlus\Mibew\Plugin\Bot\Controller\Chat\BotController::OffBot
+        _access_check: Mibew\AccessControl\Check\LoggedInCheck
+    requirements:
+        thread_id: \d{1,10}
+        token: \d{1,10}
+
+plugin_bot_update_messages:
+    path: /bot/plugin/update/{thread_id}
+    defaults:
+        _controller: TaisaPlus\Mibew\Plugin\Bot\Controller\Chat\BotController::UpdateBotMessages
+        _access_check: Mibew\AccessControl\Check\LoggedInCheck
+    requirements:
+        thread_id: \d{1,10}
+
+plugin_bot_connection_ping:
+    path: /bot/plugin/connection
+    defaults:
+        _controller: TaisaPlus\Mibew\Plugin\Bot\Controller\Chat\BotController::StatusBotServer
+        _access_check: Mibew\AccessControl\Check\LoggedInCheck

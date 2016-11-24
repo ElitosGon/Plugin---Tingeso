@@ -1,0 +1,106 @@
+/* list of awaiting visitors */
+table.awaiting {
+     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+     text-align: center;
+}
+
+/*Activado*/
+table.awaiting td.Activado{
+    color: green;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .Activado a {
+   color: green;
+}
+
+td.Activado{
+    background-color: white;
+}
+
+/*Desactivado*/
+table.awaiting td.Desactivado{
+    color: green;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .Desactivado a {
+    color: green;
+}
+
+td.Activado{
+    background-color: white;
+}
+
+
+
+/*Bloqueado*/
+table.awaiting td.BloqueadoA{
+    color: white;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .BloqueadoA a {
+    color: white;
+}
+
+td.BloqueadoA{
+    background-color: #ff876d;
+}
+
+table.awaiting td.BloqueadoB{
+    color: white;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .BloqueadoB a {
+    color: white;
+}
+
+td.BloqueadoB{
+    background-color: #ff876d;
+}
+
+table.awaiting td.BloqueadoC{
+    color: white;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .BloqueadoC a {
+    color: white;
+}
+
+td.BloqueadoC{
+    background-color: #ff876d;
+}
+
+table.awaiting td.BloqueadoD{
+    color: white;
+    border-bottom: 1px solid #cccccc;
+}
+
+.awaiting .BloqueadoD a {
+    color: white;
+}
+
+td.BloqueadoD{
+    background-color: #ff876d;
+}
+
+
+#alert {
+    font-size: 1.5em;
+    line-height: 32px;
+    margin-left: 0x;
+    text-decoration: none;
+    float: middle;
+    display: center;
+}
+
+.fine{
+    color: green;
+}
+
+.alert{
+    color: red;
+}

@@ -1,0 +1,5 @@
+node_modules/
+composer.lock
+composer.phar
+release/
+vendor/

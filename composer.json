@@ -1,0 +1,25 @@
+{
+    "name": "TaisaPlus/Bot",
+    "description": "Plugin con funcionalidades específicas para Bot",
+    "authors": [
+        {
+            "name": "taisaPlus+",
+            "email": "development@taisaplus.com"
+        }
+    ],
+    "require": {
+        "pear/http_request2": "^2.3",
+        "pear/net_url2": "^2.2",
+        "pear/pear_exception": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^3.3.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-0": {"TaisaPlus\\Mibew\\Plugin\\Bot\\": ""}
+    },
+    "target-dir": "TaisaPlus/Mibew/Plugin/Bot"
+}
