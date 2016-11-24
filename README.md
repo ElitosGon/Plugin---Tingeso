@@ -10,7 +10,13 @@ Plugin Bot framework to mibew.
 
 3. Put files of the plugins to the `<Mibew root>/plugins`  folder.
 
-4. Navigate to "`<Mibew Base URL>`/operator/plugin" page and enable the plugin.
+4. Add plugins configs to "plugins" structure in "`<Mibew root>`/configs/config.yml". If the "plugins" stucture looks like `plugins: []` it will become:
+    ```yaml
+    plugins:
+        "TaisaPlus:Bot": # Plugin's configurations are described below
+            ...
+    ```
+5. Navigate to "`<Mibew Base URL>`/operator/plugin" page and enable the plugin.
 
 ## Build from sources
 
