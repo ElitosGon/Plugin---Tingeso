@@ -4,10 +4,10 @@ namespace TaisaPlus\Mibew\Plugin\Bot\Controller\Chat;
 use Mibew\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Mibew\Database;
-use Mibew\RequestProcessor\ThreadProcessor;
 use Mibew\Thread;
+use Mibew\RequestProcessor\ThreadProcessor;
 use HTTP_Request2;
-
+use Mibew\Plugin\PluginManager;
 
 /**
  * Contains all actions which are related with operator's chat window.
@@ -15,7 +15,7 @@ use HTTP_Request2;
 class BotController extends AbstractController{
     const BOT_ON_VALUE = "0";
     const BOT_OFF_VALUE = "1";
-   
+
     public function status(Request $request){
         try{
         $thread_id = $request->attributes->get('thread_id');
@@ -63,6 +63,9 @@ class BotController extends AbstractController{
     }
 
     public function UpdateBotMessages(Request $request){
+        $plugin = PluginManager::getInstance()->getPlugin('TaisaPlus:Bot');
+        $BotAgentName = $plugin->config['BotAgentName'];
+
         try {
             $thread_id = $request->attributes->get('thread_id');
             $db = Database::getInstance();
@@ -86,7 +89,7 @@ class BotController extends AbstractController{
                          $posted_id_bot = $thread->
                                           postMessage(Thread::KIND_AGENT, 
                                                       $m, 
-                                                      array('name' => BotAgentName, 
+                                                      array('name' => $BotAgentName, 
                                                             'isBot' => true));
                         }
                     }
@@ -106,12 +109,16 @@ class BotController extends AbstractController{
     }
 
     protected function GetTokenPing(){
-          $url = "https://directline.botframework.com/api/tokens";
+          $plugin = PluginManager::getInstance()->getPlugin('TaisaPlus:Bot');
+          $BotSecret = $plugin->config['botSecret']; 
+          $hostToken = $plugin->config['hostToken'];
+
+          $url = $hostToken;
           $request = new HTTP_Request2($url, HTTP_Request2::METHOD_GET); 
           $headers = array(
               'Accept: application/json',
               'Content-Type: application/json',
-              "Authorization: BotConnector ".botSecret,
+              "Authorization: BotConnector ".$BotSecret,
           );
           $request->setHeader($headers);
           try{         
@@ -125,12 +132,17 @@ class BotController extends AbstractController{
 
     // Función para obtener los ultimos mensajes del bot directLine
     protected function GetMesaggesBotDirectLine($conversationId){
-          $url = hostDirectLine."/".$conversationId."/messages";
+          $plugin = PluginManager::getInstance()->getPlugin('TaisaPlus:Bot');
+          $hostDirectLine = $plugin->config['hostDirectLine'];
+          $BotName = $plugin->config['BotName'];
+          $BotSecret = $plugin->config['botSecret']; 
+
+          $url = $hostDirectLine."/".$conversationId."/messages";
           $request = new HTTP_Request2($url, HTTP_Request2::METHOD_GET);
           $headers = array(
               'Accept: application/json',
               'Content-Type: application/json',
-              "Authorization: BotConnector ".botSecret);
+              "Authorization: BotConnector ".$BotSecret);
           $request->setHeader($headers);
           try{         
               $response = $request->send();
@@ -138,9 +150,10 @@ class BotController extends AbstractController{
               $messages = $object->{'messages'};
 
               $LastMessages = array(0 => 'init');
+
               foreach ($messages as &$m) {
                   $m_author = $m->{'from'};
-                  if ($m_author == BotName){
+                  if ($m_author == $BotName){
                     $m_id = $m->{'id'};
                     $m_id = substr($m_id, strlen($conversationId)+1);
                     $m_id_int = (int)$m_id;

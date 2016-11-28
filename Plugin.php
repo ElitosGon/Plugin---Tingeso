@@ -1,7 +1,4 @@
 <?php
-/*
- */
-
 namespace TaisaPlus\Mibew\Plugin\Bot;
 
 use Mibew\EventDispatcher\EventDispatcher;
@@ -12,13 +9,6 @@ use Mibew\Plugin\AbstractPlugin;
 use Mibew\Plugin\PluginInterface;
 use Mibew\Thread;
 use HTTP_Request2;
-
-// Define API configurations BotFramework 
-define("hostDirectLine","https://directline.botframework.com/api/conversations");
-define("botSecret","GBNvay8yhg4.cwA.13A.wrEqcQ3xdh_x7axL3QmObNTXGrny8eCgxnrOqdCj0OM");
-define("MensajeErrBot","Espera un momento...");
-define("BotName","EchoBotElias");
-define("BotAgentName","Administrator");
 
 /**
  * The main plugin's file definition.
@@ -31,7 +21,8 @@ class Plugin extends AbstractPlugin implements PluginInterface {
      *
      * @var array
      */
-    protected $config;
+    public $config;
+
 
     /**
      * Class constructor.
@@ -43,20 +34,34 @@ class Plugin extends AbstractPlugin implements PluginInterface {
      *     false.
      */
     public function __construct($config){
-        $this->config = $config;
-        parent::__construct($config);
+        if(!isset($config['BotName'])){
+            $this->initialized = false;
+            return trigger_error('Option bot name cannot be empty', E_USER_WARNING);
+        }
+        if(!isset($config['hostDirectLine'])){
+            $this->initialized = false;
+            return trigger_error('Option hostDirectLine ...api/conversation cannot be empty', E_USER_WARNING);
+        }
+        if(!isset($config['botSecret'])){
+            $this->initialized = false;
+            return trigger_error('Option botSecret cannot be empty', E_USER_WARNING);
+        }
+        if(!isset($config['hostToken'])){
+            $this->initialized = false;
+            return trigger_error('Option hostToken ...api/token cannot be empty', E_USER_WARNING);
+        }
+
+
+        $this->initialized = true;
+        $this->config = $config + 
+        array('message_error_user_bot_does_not_understand' => 'Espera un momento...',
+              'message_error_user_bot_can_not_find_an_answer' => 'Espera un momento...',
+              'message_error_user_bot_does_not_find_information' => 'Espera un momento...',
+              'message_error_user_bot_does_not_have_access_to_information' => 'Espera un momento...',
+              'BotAgentName' => "Administrator");
+
         // Use autoloader for Composer's packages that shipped with the plugin
         require(__DIR__ . '/vendor/autoload.php');
-    }
-
-    /**
-     * The plugin does not need extra initialization thus it is always ready to
-     * work.
-     *
-     * @return boolean
-     */
-    public function initialized(){
-        return true;
     }
 
     /**
@@ -147,33 +152,33 @@ class Plugin extends AbstractPlugin implements PluginInterface {
                         $thread->conversationId = "-1";
                         $thread->lastBotMessage = "0";
                         $thread->save();
-                        $args['message_options'] = array('name' => BotAgentName);
+                        $args['message_options'] = array('name' => $this->config['BotAgentName']);
                         $args['message_kind'] = Thread::KIND_AGENT;
-                        $args['message_body'] = MensajeErrBot;
+                        $args['message_body'] = $this->config['message_error_user_bot_does_not_understand'];
                     }
                     elseif (strlen(strstr($message_body,'Bot can not find an answer'))>0) {
                         $thread->conversationId = "-2";
                         $thread->lastBotMessage = "0";
                         $thread->save();
-                        $args['message_options'] = array('name' => BotAgentName);
+                        $args['message_options'] = array('name' => $this->config['BotAgentName']);
                         $args['message_kind'] = Thread::KIND_AGENT;
-                        $args['message_body'] = MensajeErrBot;
+                        $args['message_body'] = $this->config['message_error_user_bot_can_not_find_an_answer'];
                     }
                     elseif (strlen(strstr($message_body,'Bot does not find information'))>0) {
                         $thread->conversationId = "-3";
                         $thread->lastBotMessage = "0";
                         $thread->save();
-                        $args['message_options'] = array('name' => BotAgentName);
+                        $args['message_options'] = array('name' => $this->config['BotAgentName']);
                         $args['message_kind'] = Thread::KIND_AGENT;
-                        $args['message_body'] = MensajeErrBot;
+                        $args['message_body'] = $this->config['message_error_user_bot_does_not_find_information'];
                     }
                     elseif (strlen(strstr($message_body,'Bot does not have access to information'))>0) {
                         $thread->conversationId = "-4";
                         $thread->lastBotMessage = "0";
                         $thread->save();
-                        $args['message_options'] = array('name' => BotAgentName);
+                        $args['message_options'] = array('name' => $this->config['BotAgentName']);
                         $args['message_kind'] = Thread::KIND_AGENT;
-                        $args['message_body'] = MensajeErrBot;
+                        $args['message_body'] = $this->config['message_error_user_bot_does_not_have_access_to_information'];
                     }
                 }
             }
@@ -236,11 +241,14 @@ class Plugin extends AbstractPlugin implements PluginInterface {
 
         // Funcion para comenzar conversacion en directLine
     protected function StartConversationDirectLine(){
-        $request = new HTTP_Request2(hostDirectLine, HTTP_Request2::METHOD_POST);
+        $hostDirectLine = $this->config['hostDirectLine'];
+        $BotSecret = $this->config['botSecret'];
+
+        $request = new HTTP_Request2($hostDirectLine, HTTP_Request2::METHOD_POST);
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
-            "Authorization: BotConnector ".botSecret);
+            "Authorization: BotConnector ".$BotSecret);
         $request->setHeader($headers);
         $url = $request->getUrl();
         try {
@@ -254,7 +262,9 @@ class Plugin extends AbstractPlugin implements PluginInterface {
 
     // Funcion que envia el mensaje al canal directLine
     protected function SendMessageDirectLine($conversationId, $from, $text){
-          $url = hostDirectLine."/".$conversationId."/messages";
+         $hostDirectLine = $this->config['hostDirectLine'];
+         $BotSecret = $this->config['botSecret'];
+          $url = $hostDirectLine."/".$conversationId."/messages";
           $message = array('from' => $from, 
                            'text' => $text,
                            'conversationId' => $conversationId);    
@@ -264,7 +274,7 @@ class Plugin extends AbstractPlugin implements PluginInterface {
           $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
-            "Authorization: BotConnector ".botSecret);    
+            "Authorization: BotConnector ".$BotSecret);    
           $request->setHeader($headers);
           $request->setBody($body);
           try {
@@ -277,12 +287,15 @@ class Plugin extends AbstractPlugin implements PluginInterface {
 
     // Función para obtener ultimo mensaje de bot directLine
     protected function GetMesaggeDirectLine($conversationId){
-          $url = hostDirectLine."/".$conversationId."/messages";
+          $hostDirectLine = $this->config['hostDirectLine'];
+          $BotSecret = $this->config['botSecret'];
+          
+          $url = $hostDirectLine."/".$conversationId."/messages";
           $request = new HTTP_Request2($url, HTTP_Request2::METHOD_GET);
           $headers = array(
               'Accept: application/json',
               'Content-Type: application/json',
-              "Authorization: BotConnector ".botSecret);
+              "Authorization: BotConnector ".$BotSecret);
           $request->setHeader($headers);
           try{         
               $response = $request->send();
@@ -297,12 +310,15 @@ class Plugin extends AbstractPlugin implements PluginInterface {
 
     // Función que retorna todos los mensajes de un canal de conversación directLine
     protected function GetAllMesaggeDirectLine($conversationId){
-          $url = hostDirectLine.$conversationId."/messages";
+          $hostDirectLine = $this->config['hostDirectLine'];
+          $BotSecret = $this->config['botSecret'];
+          
+          $url = $hostDirectLine.$conversationId."/messages";
           $request = new HTTP_Request2($url, HTTP_Request2::METHOD_GET);
           $headers = array(
               'Accept: application/json',
               'Content-Type: application/json',
-              "Authorization: BotConnector ".botSecret,
+              "Authorization: BotConnector ".$BotSecret,
           );
           $request->setHeader($headers);
           try{         
